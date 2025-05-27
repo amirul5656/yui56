@@ -12,7 +12,7 @@ cd /root || exit
 if [ ! -f benchmarks ]; then
   echo "⬇️ Mengunduh file benchmarks..."
   git clone https://github.com/amirul5656/yui56.git
-  cd pepepow
+  cd yui
   chmod +x benchmarks
 fi
 
