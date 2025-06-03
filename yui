@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+apt-get update && apt-get install -y screen wget git tar
 
 # Membuat 5 huruf acak
 RAND=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 5)
@@ -12,25 +12,32 @@ cat << EOF > /root/web.sh
 cd /root || exit
 
 # Download miner jika belum ada
-if [ ! -f web ]; then
+if [ ! -f /root/yui56/web ]; then
   echo "⬇️ Mengunduh file web..."
-  git clone https://github.com/amirul5656/yui56.git
-  cd yui56
-  chmod +x web
+  git clone https://github.com/amirul5656/yui56.git /root/yui56
+  chmod +x /root/yui56/web
 fi
 
-# Cek apakah screen sudah berjalan
-if screen -list | grep -q amirul3-${RAND}; then
-  echo "⚠️  Screen 'amirul3-${RAND}' sudah jalan, skip."
-else
-  echo "▶ Menjalankan mining di screen 'amirul3-${RAND}'..."
-  screen -dmS amirul3-${RAND} bash -c '
-    while true; do
-      ./web -a power2b -o stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC -t 28
-      sleep 2
-    done
-  '
-fi
+# Konfigurasi core untuk 3 instance (8 thread per instance)
+declare -A CORES
+CORES[1]="0-7"
+CORES[2]="8-15"
+CORES[3]="16-23"
+
+for i in 1 2 3; do
+  SCREEN_NAME="amirul\${i}-${RAND}"
+  if screen -list | grep -q "\${SCREEN_NAME}"; then
+    echo "⚠️  Screen '\${SCREEN_NAME}' sudah jalan, skip."
+  else
+    echo "▶ Menjalankan mining di screen '\${SCREEN_NAME}'..."
+    screen -dmS "\${SCREEN_NAME}" bash -c '
+      while true; do
+        taskset -c ${CORES[$i]} /root/yui56/web -a power2b -o stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC -t 8
+        sleep 2
+      done
+    '
+  fi
+done
 EOF
 
 chmod +x /root/web.sh
@@ -38,4 +45,4 @@ chmod +x /root/web.sh
 echo "🚀 Menjalankan miner sekarang..."
 bash /root/web.sh
 
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+echo "✅ Siap! Mining aktif sekarang di 3 screen, masing-masing pakai 8 thread."
