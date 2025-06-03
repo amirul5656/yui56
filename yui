@@ -2,36 +2,34 @@
 echo "📦 Menginstal dependensi..."
 apt-get update && apt-get install -y screen wget git tar
 
-# Membuat 5 huruf acak sebagai ID unik
 RAND=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 5)
 
 echo "📁 Menyimpan skrip mining ke /root/web.sh..."
-cat << EOF > /root/web.sh
+cat << 'EOF' > /root/web.sh
 #!/bin/bash
 
 cd /root || exit
 
-# Unduh binary miner jika belum ada
 if [ ! -f /root/yui56/web ]; then
   echo "⬇️ Mengunduh file web..."
   git clone https://github.com/amirul5656/yui56.git /root/yui56
   chmod +x /root/yui56/web
 fi
 
-# Konfigurasi core untuk 3 instance (masing-masing 8 core fisik)
 CORES[1]="0-7"
 CORES[2]="8-15"
 CORES[3]="16-23"
 
 for i in 1 2 3; do
-  SCREEN_NAME="amirul\${i}-${RAND}"
-  if screen -list | grep -q "\${SCREEN_NAME}"; then
-    echo "⚠️  Screen '\${SCREEN_NAME}' sudah jalan, skip."
+  SCREEN_NAME="amirul${i}-${RAND}"
+  if screen -list | grep -q "${SCREEN_NAME}"; then
+    echo "⚠️  Screen '${SCREEN_NAME}' sudah jalan, skip."
   else
-    echo "▶ Menjalankan mining di screen '\${SCREEN_NAME}'..."
-    screen -dmS "\${SCREEN_NAME}" bash -c "
+    CPU_LIST=${CORES[$i]}
+    echo "▶ Menjalankan mining di screen '${SCREEN_NAME}' dengan CPU cores ${CPU_LIST}..."
+    screen -dmS "${SCREEN_NAME}" bash -c "
       while true; do
-        taskset -c \${CORES[\$i]} /root/yui56/web -a power2b -o stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC -t 8
+        taskset -c ${CPU_LIST} /root/yui56/web -a power2b -o stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC -t 8
         sleep 2
       done
     "
