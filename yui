@@ -23,7 +23,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC,04 --cpu-threads 15
+      ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5 -p c=LTC,04 --cpu-threads 20
       sleep 2
     done
   '
