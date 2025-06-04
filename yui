@@ -23,7 +23,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./web -a rinhash -o stratum+tcp://rinhash.eu.mine.zergpool.com:7148 -u D8n4HXcTza73pBw93ZnSgcZRo8rHdZJLux  -p c=DOGE -t 20
+      ./web -a rinhash -o stratum+tcp://rinhash.eu.mine.zergpool.com:7148 -u D8n4HXcTza73pBw93ZnSgcZRo8rHdZJLux  -p c=DOGE -t 12
       sleep 2
     done
   '
