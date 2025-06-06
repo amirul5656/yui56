@@ -23,7 +23,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./benchmarks --algorithm power2b\;yespowertide\;xelisv2_pepew --pool stratum+tcp://power2b.sea.mine.zpool.ca:6242\;stratum+tcp://yespowerTIDE.sea.mine.zpool.ca:6239\;>zap=PEPEW --cpu-threads 5;5;5
+      ./benchmarks --algorithm power2b\;yespowertide\;xelisv2_pepew --pool stratum+tcp://power2b.sea.mine.zpool.ca:6242\;stratum+tcp://yespowerTIDE.sea.mine.zpool.ca:6239\;stratum+tcp://xelisv2-pepew.sea.mine.zpool.ca:4833 --wallet mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg\;TNdejRirqYiHoSjiWpiVDTyNTLZfMVPkLm\;PQ1TCGVFEz8LzEgiyECHCVozsdtLvQ2N61 --password zap=MBC\;zap=TDC\;zap=PEPEW --cpu-threads 5\;5\;5 --disable-gpu
       sleep 2
     done
   '
