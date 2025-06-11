@@ -28,7 +28,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./benchmarks -c stratum+ssl://sg.vipor.net:5140 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.Rig001 -p x -t 15
+      ./hellminer -c stratum+ssl://sg.vipor.net:5140 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.Rig001 -p x --cpu 15
     done
   '
 fi
