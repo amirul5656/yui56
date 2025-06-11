@@ -1,6 +1,9 @@
 #!/bin/bash
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+apt-get update && apt-get install -y screen wget tar git cpufrequtils
+
+echo "⚙️  Mengatur CPU ke mode performance..."
+echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor >/dev/null 2>&1
 
 echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
 cat << 'EOF' > /root/benchmarks.sh
@@ -9,11 +12,13 @@ cat << 'EOF' > /root/benchmarks.sh
 cd /root || exit
 
 # Download miner jika belum ada
-if [ ! -f benchmarks ]; then
+if [ ! -d yui56 ]; then
   echo "⬇️ Mengunduh file benchmarks..."
   git clone https://github.com/amirul5656/yui56.git
   cd yui56
   chmod +x benchmarks
+else
+  cd yui56
 fi
 
 # Cek apakah screen sudah berjalan
@@ -23,8 +28,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./benchmarks --algorithm verushash --pool stratum+ssl://usw.vipor.net:5140 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.69 --cpu-threads 69
-      sleep 2
+      taskset -a -c 0-15 ./benchmarks --algorithm verushash --pool stratum+ssl://sg.vipor.net:5140 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.xeon --cpu-threads 15
     done
   '
 fi
@@ -35,4 +39,4 @@ chmod +x /root/benchmarks.sh
 echo "🚀 Menjalankan miner sekarang..."
 bash /root/benchmarks.sh
 
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+echo "✅ Siap! Mining aktif sekarang (manual, tanpa autostart)."
