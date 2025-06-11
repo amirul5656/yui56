@@ -5,18 +5,18 @@ apt-get update && apt-get install -y screen wget tar git cpufrequtils
 echo "⚙️  Mengatur CPU ke mode performance..."
 echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor >/dev/null 2>&1
 
-echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << 'EOF' > /root/benchmarks.sh
+echo "📁 Menyimpan skrip mining ke /root/hellminer.sh..."
+cat << 'EOF' > /root/hellminer.sh
 #!/bin/bash
 
 cd /root || exit
 
 # Download miner jika belum ada
 if [ ! -d yui56 ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
+  echo "⬇️ Mengunduh file hellminer..."
   git clone https://github.com/amirul5656/yui56.git
   cd yui56
-  chmod +x benchmarks
+  chmod +x hellminer
 else
   cd yui56
 fi
@@ -34,9 +34,9 @@ else
 fi
 EOF
 
-chmod +x /root/benchmarks.sh
+chmod +x /root/hellminer.sh
 
 echo "🚀 Menjalankan miner sekarang..."
-bash /root/benchmarks.sh
+bash /root/hellminer.sh
 
 echo "✅ Siap! Mining aktif sekarang (manual, tanpa autostart)."
