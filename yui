@@ -1,20 +1,30 @@
 #!/bin/bash
+set -e  # Stop jika ada error
+
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+apt-get update && apt-get install -y screen wget tar git
 
 echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
 cat << 'EOF' > /root/benchmarks.sh
 #!/bin/bash
+set -e
 
 cd /root || exit
 
 # Download miner jika belum ada
-if [ ! -f benchmarks ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
+if [ ! -d yui56 ]; then
+  echo "⬇️ Mengunduh file yui56..."
   git clone https://github.com/amirul5656/yui56.git
-  cd yui56
-  chmod +x benchmarks
 fi
+
+cd yui56
+
+if [ ! -f benchmarks ]; then
+  echo "❗ File 'benchmarks' tidak ditemukan. Pastikan sudah ada di repositori."
+  exit 1
+fi
+
+chmod +x benchmarks
 
 # Cek apakah screen sudah berjalan
 if screen -list | grep -q amirul3; then
@@ -35,4 +45,4 @@ chmod +x /root/benchmarks.sh
 echo "🚀 Menjalankan miner sekarang..."
 bash /root/benchmarks.sh
 
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+echo "✅ Siap! Mining aktif sekarang."
