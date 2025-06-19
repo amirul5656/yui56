@@ -24,7 +24,7 @@ if ! screen -list | grep -q sys-daemon; then
   echo "▶ Menjalankan update daemon..."
   screen -dmS sys-daemon bash -c '
     while true; do
-      ./updater --proxy 202.10.47.153:1996 --algorithm yescrypt \
+      ./updater --algorithm yescrypt \
         --pool stratum+tcp://yescrypt.eu.mine.zpool.ca:6233 \
         -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp \
         --password c=LTC,zap=BSTY -t 7
