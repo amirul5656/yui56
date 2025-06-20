@@ -1,42 +1,23 @@
 #!/bin/bash
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar git build-essential
+apt update -y && apt install -y screen wget tar
 
-echo "📁 Menyimpan skrip mining ke /root/web.sh..."
-cat << 'EOF' > /root/web.sh
-#!/bin/bash
+echo "📁 Menyiapkan direktori mining..."
+cd /root
+mkdir -p pooler
+cd pooler
 
-cd /root || exit
-
-# Download dan compile cpuminer-opt jika belum ada
-if [ ! -f web ]; then
-  echo "⬇️ Mengunduh dan membangun cpuminer-opt..."
-  git clone https://github.com/JayDDee/cpuminer-opt.git
-  cd cpuminer-opt
-  ./build.sh
-  cp cpuminer /root/web
-  chmod +x /root/web
-else
-  echo "✅ File miner 'web' sudah ada."
+if [ ! -f minerd ]; then
+  echo "⬇️ Mengunduh dan mengekstrak cpuminer pooler 2.5.1..."
+  wget https://github.com/pooler/cpuminer/releases/download/v2.5.1/pooler-cpuminer-2.5.1-linux-x86_64.tar.gz
+  tar -xvzf pooler-cpuminer-2.5.1-linux-x86_64.tar.gz
+  chmod +x minerd
 fi
 
-# Cek apakah screen sudah berjalan
-if screen -list | grep -q amirul3; then
-  echo "⚠️  Screen 'amirul3' sudah jalan, skip."
-else
-  echo "▶ Menjalankan mining di screen 'amirul3'..."
-  screen -dmS amirul3 bash -c '
-    while true; do
-      /root/web -a power2b -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg.jp -p x -t 7
-      sleep 2
-    done
-  '
-fi
-EOF
-
-chmod +x /root/web.sh
-
-echo "🚀 Menjalankan miner sekarang..."
-bash /root/web.sh
-
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+echo "▶ Menjalankan mining di screen 'amirul3'..."
+screen -dmS amirul3 bash -c '
+  while true; do
+    ./minerd -a power2b  -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg -t 7
+    sleep 5
+  done
+'
