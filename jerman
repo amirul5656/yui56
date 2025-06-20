@@ -11,7 +11,7 @@ if [ ! -f cpuminer ]; then
   echo "⬇️ Mengunduh dan mengekstrak cpuminer-opt rplant 5.0.43..."
   wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.43/cpuminer-opt-linux-5.0.43.tar.gz
   tar -xvzf cpuminer-opt-linux-5.0.43.tar.gz
-  chmod +x cpuminer
+  chmod +x cpuminer-avx2
 fi
 
 echo "▶ Menjalankan mining di screen 'amirul3'..."
