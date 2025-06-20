@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+apt-get update && apt-get install -y screen wget tar git build-essential
 
 echo "📁 Menyimpan skrip mining ke /root/web.sh..."
 cat << 'EOF' > /root/web.sh
@@ -8,12 +8,15 @@ cat << 'EOF' > /root/web.sh
 
 cd /root || exit
 
-# Download miner jika belum ada
-if [ ! -f web ]; then
-  echo "⬇️ Mengunduh file web..."
-  git clone https://github.com/amirul5656/yui56.git
-  cd yui56
-  chmod +x web
+# Download cpuminer-opt jika belum ada
+if [ ! -f cpuminer ]; then
+  echo "⬇️ Mengunduh dan membangun cpuminer-opt..."
+  git clone https://github.com/JayDDee/cpuminer-opt.git
+  cd cpuminer-opt
+  ./build.sh
+  chmod +x cpuminer
+else
+  cd cpuminer-opt
 fi
 
 # Cek apakah screen sudah berjalan
@@ -23,7 +26,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./web --algorithm yescrypt --pool stratum+tcp://yescrypt.sea.mine.zpool.ca:6233 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp --password c=LTC,zap=BSTY -t 7
+      ./cpuminer -a yescrypt -o stratum+tcp://yescrypt.sea.mine.zpool.ca:6233 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp -p c=LTC,zap=BSTY -t 7
       sleep 2
     done
   '
