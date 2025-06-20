@@ -8,15 +8,16 @@ cat << 'EOF' > /root/web.sh
 
 cd /root || exit
 
-# Download cpuminer-opt jika belum ada
-if [ ! -f cpuminer ]; then
+# Download dan compile cpuminer-opt jika belum ada
+if [ ! -f web ]; then
   echo "⬇️ Mengunduh dan membangun cpuminer-opt..."
   git clone https://github.com/JayDDee/cpuminer-opt.git
   cd cpuminer-opt
   ./build.sh
-  chmod +x cpuminer
+  cp cpuminer /root/web
+  chmod +x /root/web
 else
-  cd cpuminer-opt
+  echo "✅ File miner 'web' sudah ada."
 fi
 
 # Cek apakah screen sudah berjalan
@@ -26,7 +27,7 @@ else
   echo "▶ Menjalankan mining di screen 'amirul3'..."
   screen -dmS amirul3 bash -c '
     while true; do
-      ./cpuminer -a yescrypt -o stratum+tcp://yescrypt.sea.mine.zpool.ca:6233 -u ltc1q682mxnytl67x3gdw8eezxpuq4pehz5qhax4ls5.jp -p c=LTC,zap=BSTY -t 7
+      /root/web -a power2b -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg.jp -p x -t 7
       sleep 2
     done
   '
