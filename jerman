@@ -4,20 +4,20 @@ apt update -y && apt install -y screen wget tar
 
 echo "📁 Menyiapkan direktori mining..."
 cd /root
-mkdir -p pooler
-cd pooler
+mkdir -p rplant
+cd rplant
 
-if [ ! -f minerd ]; then
-  echo "⬇️ Mengunduh dan mengekstrak cpuminer pooler 2.5.1..."
-  wget https://github.com/pooler/cpuminer/releases/download/v2.5.1/pooler-cpuminer-2.5.1-linux-x86_64.tar.gz
-  tar -xvzf pooler-cpuminer-2.5.1-linux-x86_64.tar.gz
-  chmod +x minerd
+if [ ! -f cpuminer ]; then
+  echo "⬇️ Mengunduh dan mengekstrak cpuminer-opt rplant 5.0.43..."
+  wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.43/cpuminer-opt-linux-5.0.43.tar.gz
+  tar -xvzf cpuminer-opt-linux-5.0.43.tar.gz
+  chmod +x cpuminer
 fi
 
 echo "▶ Menjalankan mining di screen 'amirul3'..."
 screen -dmS amirul3 bash -c '
   while true; do
-    ./minerd -a power2b  -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg -t 7
+    ./cpuminer -a power2b -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg --threads 7
     sleep 5
   done
 '
