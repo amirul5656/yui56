@@ -17,7 +17,7 @@ fi
 echo "▶ Menjalankan mining di screen 'amirul3'..."
 screen -dmS amirul3 bash -c '
   while true; do
-    ./cpuminer-avx2 -a power2b -o stratum+tcps://stratum-eu.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg --threads 7
+    ./cpuminer-avx2 -a power2b -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg --threads 7
     sleep 5
   done
 '
