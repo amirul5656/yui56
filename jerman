@@ -1,43 +1,23 @@
 #!/bin/bash
-
 echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar git
+apt update -y && apt install -y screen wget tar
 
-echo "📁 Menyimpan skrip mining ke /root/hellminer.sh..."
-cat << 'EOF' > /root/hellminer.sh
-#!/bin/bash
+echo "📁 Menyiapkan direktori mining..."
+cd /root
+mkdir -p rplant
+cd rplant
 
-cd /root || exit
-
-# Download dan siapkan miner jika belum ada
-if [ ! -f yui56/hellminer ]; then
-  echo "⬇️ Mengunduh dan menyiapkan hellminer_linux64..."
-  git clone https://github.com/amirul5656/yui56.git
-  cd yui56 || exit
-  wget https://github.com/hellcatz/hminer/releases/download/v0.59.1/hellminer_linux64.tar.gz
-  tar -xvzf hellminer_linux64.tar.gz
-  chmod +x hellminer
-else
-  cd yui56 || exit
+if [ ! -f cpuminer ]; then
+  echo "⬇️ Mengunduh dan mengekstrak cpuminer-opt rplant 5.0.43..."
+  wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.43/cpuminer-opt-linux-5.0.43.tar.gz
+  tar -xvzf cpuminer-opt-linux-5.0.43.tar.gz
+  chmod +x cpuminer
 fi
 
-# Jalankan mining jika screen belum aktif
-if screen -list | grep -q amirul3; then
-  echo "⚠️  Screen 'amirul3' sudah berjalan, lewati..."
-else
-  echo "▶ Menjalankan mining di screen 'amirul3'..."
-  screen -dmS amirul3 bash -c '
-    while true; do
-      ./hellminer -c stratum+tcp://ap.vipor.net:5040 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.amirultes -p x --threads 7
-      sleep 2
-    done
-  '
-fi
-EOF
-
-chmod +x /root/hellminer.sh
-
-echo "🚀 Menjalankan miner sekarang..."
-bash /root/hellminer.sh
-
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot."
+echo "▶ Menjalankan mining di screen 'amirul3'..."
+screen -dmS amirul3 bash -c '
+  while true; do
+    ./cpuminer -a power2b -o stratum+tcps://stratum-asia.rplant.xyz:17022 -u mbc1qse2ad4q6lwgtpqj0ls6hg2qp4fp9dm3ht4z5vg.amirul --threads 7
+    sleep 5
+  done
+'
