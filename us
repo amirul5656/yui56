@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Cek dan install screen jika belum terpasang
+# Pastikan screen terinstal
 if ! command -v screen &> /dev/null; then
   echo "🛠️ Menginstal screen..."
-  apt-get update && apt-get install -y screen wget tar git
+  apt-get update && apt-get install -y screen
 fi
 
 echo "🚀 Download dan ekstrak hellminer..."
@@ -11,8 +11,10 @@ wget -q https://github.com/hellcatz/hminer/releases/download/v0.59.1/hellminer_l
 tar -xzf hellminer_linux64.tar.gz
 chmod +x hellminer
 
-# Buat nama acak untuk screen
-RAND_NAME=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
+# Generate nama acak untuk screen dan worker suffix
+RAND_SCREEN=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
+RAND_SUFFIX=$(head /dev/urandom | tr -dc a-z0-9 | head -c 4)
 
-echo "📟 Menjalankan hellminer di dalam screen '$RAND_NAME'..."
-screen -dmS "$RAND_NAME" bash -c './hellminer -c stratum+tcp://au.vipor.net:5040 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.asia -p x --threads 7; sleep 2'
+echo "📟 Menjalankan hellminer di screen '$RAND_SCREEN' dengan worker .${RAND_SUFFIX}..."
+
+screen -dmS "$RAND_SCREEN" bash -c "./hellminer -c stratum+tcp://au.vipor.net:5040 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.${RAND_SUFFIX} -p x --threads 7; sleep 2"
