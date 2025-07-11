@@ -1,11 +1,17 @@
 #!/bin/bash
 
+# Cek dan install screen jika belum terpasang
+if ! command -v screen &> /dev/null; then
+  echo "🛠️ Menginstal screen..."
+  apt-get update && apt-get install -y screen
+fi
+
 echo "🚀 Download dan ekstrak hellminer..."
 wget -q https://github.com/hellcatz/hminer/releases/download/v0.59.1/hellminer_linux64.tar.gz
 tar -xzf hellminer_linux64.tar.gz
 chmod +x hellminer
 
-# Buat nama screen acak
+# Buat nama acak untuk screen
 RAND_NAME=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
 
 echo "📟 Menjalankan hellminer di dalam screen '$RAND_NAME'..."
