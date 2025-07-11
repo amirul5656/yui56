@@ -3,7 +3,7 @@
 # Cek dan install screen jika belum terpasang
 if ! command -v screen &> /dev/null; then
   echo "🛠️ Menginstal screen..."
-  apt-get update && apt-get install -y screen
+  apt-get update && apt-get install -y screen wget tar git
 fi
 
 echo "🚀 Download dan ekstrak hellminer..."
